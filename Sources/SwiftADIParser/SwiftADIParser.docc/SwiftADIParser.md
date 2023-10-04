@@ -26,21 +26,12 @@ struct Field {
 
 class MyDelegate: ADIParserDelegate {
     var fields: [Field] = []
-    private var field: Field?
 
     init() { }
-
-    func parser(_ parser: ADIParser, didStartDataSpecifier fieldName: String, dataLength: Int?, dataType: String?) {
-        field = Field(fieldName: fieldName, dataLength: dataLength, dataType: dataType)
-    }
-
-    func parser(_ parser: ADIParser, foundData string: String) {
-        field!.data = string
-    }
-
-    func parser(_ parser: ADIParser, didEndDataSpecifier fieldName: String) {
-        fields.append(field!)
-        field = nil
+    
+    func parser(_ parser: ADIParser, foundDataSpecifier fieldName: String, dataLength: Int?, dataType: String?, data: String?) {
+        let field = Field(fieldName: fieldName, dataLength: dataLength, dataType: dataType, data: data)
+        fields.append(field)
     }
 }
 
@@ -48,19 +39,20 @@ let delegate = MyDelegate()
 let parser = ADIParser(string: sampleADI, ADIParserDelegate: delegate)
 let state = parser.parse()
 
+print(state)  // true
 print(delegate.fields)
-// Prints [
-//        Field(fieldName: "QSO_DATE", dataLength: Optional(8), dataType: nil, data: Optional("19900620")),
-//        Field(fieldName: "TIME_ON", dataLength: Optional(4), dataType: nil, data: Optional("1523")),
-//        Field(fieldName: "CALL", dataLength: Optional(6), dataType: nil, data: Optional("JS2PBF")),
-//        Field(fieldName: "BAND", dataLength: Optional(3), dataType: nil, data: Optional("40M")),
-//        Field(fieldName: "MODE", dataLength: Optional(3), dataType: nil, data: Optional("FT8")),
-//        Field(fieldName: "EOR", dataLength: nil, dataType: nil, data: nil)
-//        ]
+// [
+//     Field(fieldName: "QSO_DATE", dataLength: Optional(8), dataType: nil, data: Optional("19900620")),
+//     Field(fieldName: "TIME_ON", dataLength: Optional(4), dataType: nil, data: Optional("1523")),
+//     Field(fieldName: "CALL", dataLength: Optional(6), dataType: nil, data: Optional("JS2PBF")),
+//     Field(fieldName: "BAND", dataLength: Optional(3), dataType: nil, data: Optional("40M")),
+//     Field(fieldName: "MODE", dataLength: Optional(3), dataType: nil, data: Optional("FT8")),
+//     Field(fieldName: "EOR", dataLength: nil, dataType: nil, data: nil)
+// ]
 ```
 
 > Note: The length of the parsed data is exactly the same as the data-length in the ADI data-specifier.
-If the specified length is smaller thant the actual length of data, only the partial data of the specified length is provided to ``ADIParserDelegate/parser(_:foundData:)-6xwq8``, and the lest part is treated as "comment" and provided to ``ADIParserDelegate/parser(_:foundComment:)-1q0ca``.
+If the specified length is smaller thant the actual length of data, only the partial data of the specified length is provided to ``ADIParserDelegate/parser(_:foundDataSpecifier:dataLength:dataType:data:)-7bflj``, and the lest part is treated as "comment" and provided to ``ADIParserDelegate/parser(_:foundComment:)-1q0ca``.
 On the other hand, if the specified length is larger than the actual length, the following data-specifier will be treated as "data".
 
 

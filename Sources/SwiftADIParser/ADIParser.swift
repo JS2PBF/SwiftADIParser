@@ -1,8 +1,6 @@
 import Foundation
 import RegexBuilder
 
-//import ADIFValidator
-
 
 /// The errors for ADI parsering.
 public enum ADIParseError: Error, LocalizedError {
@@ -65,7 +63,7 @@ open class ADIParser {
         while let match = str.firstMatch(of: tagRe) {
             lineNumber += match.0.matches(of: #/\R/#).count
             
-            // Check non-data-specifier charactors
+            // Send non-data-specifier charactors
             let comment = String(match.1)
             if let _ = comment.firstMatch(of: #/\S+/#) {
                 delegate!.parser(self, foundComment: String(comment))
@@ -75,20 +73,20 @@ open class ADIParser {
             let fieldName = match.2
             let dataLength: Int? = match.3
             let dataType: String? = match.4 as? String
-            delegate!.parser(self, didStartDataSpecifier: fieldName, dataLength: dataLength, dataType: dataType)
             str.removeSubrange(..<match.range.upperBound)
             
             // Parse data
             // Use UTF8View to treat CRLF as two characters.
+            var data: String? = nil
             if dataLength ?? 0 > 0 {
                 let utf = str.utf8
-                let data = String(decoding: utf.prefix(dataLength!), as: UTF8.self)
-                lineNumber += data.matches(of: #/\R/#).count
-                delegate!.parser(self, foundData: data)
+                data = String(decoding: utf.prefix(dataLength!), as: UTF8.self)
+                lineNumber += data!.matches(of: #/\R/#).count
                 str = String(decoding: utf.dropFirst(dataLength!), as: UTF8.self)
             }
             
-            delegate!.parser(self, didEndDataSpecifier: fieldName)
+            // Send data-specifier to delegate
+            delegate!.parser(self, foundDataSpecifier: fieldName, dataLength: dataLength, dataType: dataType, data: data)
         }
         
         // End parsing
@@ -119,21 +117,10 @@ public protocol ADIParserDelegate {
     /// - Parameters:
     ///   - parser: The parser object.
     ///   - fieldName: The field name of the data-specifier.
-    ///   - dataLength: the data length of the data-specifier.
+    ///   - dataLength: The data length of the data-specifier.
     ///   - dataType: The data type indicator of the data-specifier.
-    func parser(_ parser: ADIParser, didStartDataSpecifier fieldName: String, dataLength: Int?, dataType: String?)
-    
-    /// Sent by a parser object to its delegate after parsing the given data-specifier.
-    /// - Parameters:
-    ///   - parser: the parser object.
-    ///   - fieldName: The field name of the current data-specifier.
-    func parser(_ parser: ADIParser, didEndDataSpecifier fieldName: String)
-    
-    /// Sent by a parser object to provide its delegate with a string representing all of the data of the current data-specifier.
-    /// - Parameters:
-    ///   - parser: The parser object.
-    ///   - string: The string that is a complete textual content of the current data-specifier.
-    func parser(_ parser: ADIParser, foundData string: String)
+    ///   - data: The data string of the specified length.
+    func parser(_ parser: ADIParser, foundDataSpecifier fieldName: String, dataLength: Int?, dataType: String?, data: String?)
     
     /// Sent by a parser object to its delegate when it encounters non-white-space charactors that doesn't belogn to data-specifiers.
     /// - Parameters:
@@ -151,9 +138,7 @@ public protocol ADIParserDelegate {
 public extension ADIParserDelegate {
     func parserDidStartDocument(_ parser: ADIParser) { }
     func parserDidEndDocument(_ parser: ADIParser) { }
-    func parser(_ parser: ADIParser, didStartDataSpecifier fieldName: String, dataLength: Int?, dataType: String?) { }
-    func parser(_ parser: ADIParser, didEndDataSpecifier fieldName: String) { }
-    func parser(_ parser: ADIParser, foundData string: String) { }
+    func parser(_ parser: ADIParser, foundDataSpecifier fieldName: String, dataLength: Int?, dataType: String?, data: String?) { }
     func parser(_ parser: ADIParser, foundComment comment: String) { }
     func parser(_ parser: ADIParser, parseErrorOccurred parseError: Error) { }
 }

@@ -12,15 +12,16 @@ final class TestDelegate: ADIParserDelegate {
     var comment: String?
     var error: Error?
     
-    func parser(_ parser: ADIParser, didStartDataSpecifier fieldName: String, dataLength: Int?, dataType: String?) {
+    func parserDidStartDocument(_ parser: ADIParser) {
+        
+    }
+    
+    func parser(_ parser: ADIParser, foundDataSpecifier fieldName: String, dataLength: Int?, dataType: String?, data: String?) {
         self.fieldName = fieldName
         self.dataLength = dataLength
         self.dataType = dataType
-    }
-    
-    func parser(_ parser: ADIParser, foundData string: String) {
-        row[fieldName!] = string
-        data = string
+        self.data = data
+        row[fieldName] = data
     }
     
     func parserDidEndDocument(_ parser: ADIParser) {
