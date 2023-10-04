@@ -8,12 +8,14 @@ It does not itself do anything with those parsed items except report them.
 Read more about this package on the [document](https://js2pbf.github.io/SwiftADIParser/documentation/swiftadiparser/).
 
 
-## Requirement
+## Requirements
 
-- Swift >= 5.7
+- Swift 5.7 or later
 
 
 ## Using the SwiftADIParser in your project
+
+To use this package in a SwiftPM project, you need to set it up as a package dependency:
 
 ```swift
 // swift-tools-version:5.7
