@@ -1,6 +1,6 @@
 # SwiftADIParser
 
-Swift package of the ADIF (Amateur Data Interchange Format) documents parser.
+Swift package of the event driven parser for ADI (Amateur Data Interchange format) documents.
 
 The ADIParser notifies its delegate about the ADI data-specifiers (field name, data length, data type indicator, data, and so on) during the parsing of ADI documents.
 It does not itself do anything with those parsed items except report them.

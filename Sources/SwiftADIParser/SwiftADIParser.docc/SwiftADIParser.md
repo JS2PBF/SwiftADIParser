@@ -1,6 +1,6 @@
 # ``SwiftADIParser``
 
-Swift package of the ADIF (Amateur Data Interchange Format) documents parser.
+Swift package of the event driven parser for ADI (Amateur Data Interchange format) documents.
 
 ## Overview
 
@@ -54,6 +54,11 @@ print(delegate.fields)
 > Note: The length of the parsed data is exactly the same as the data-length in the ADI data-specifier.
 If the specified length is smaller thant the actual length of data, only the partial data of the specified length is provided to ``ADIParserDelegate/parser(_:foundDataSpecifier:dataLength:dataType:data:)-7bflj``, and the lest part is treated as "comment" and provided to ``ADIParserDelegate/parser(_:foundComment:)-1q0ca``.
 On the other hand, if the specified length is larger than the actual length, the following data-specifier will be treated as "data".
+
+
+## Additional Resources
+
+- [ADIF.org](https://www.adif.org/)\: The ADIF specification and other information can be found. 
 
 
 ## Topics
