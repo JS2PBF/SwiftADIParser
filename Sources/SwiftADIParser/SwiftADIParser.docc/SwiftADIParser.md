@@ -56,6 +56,11 @@ If the specified length is smaller thant the actual length of data, only the par
 On the other hand, if the specified length is larger than the actual length, the following data-specifier will be treated as "data".
 
 
+## Source code
+
+[GitHub - SwiftADIParser](https://github.com/JS2PBF/SwiftADIParser)
+
+
 ## Additional Resources
 
 - [ADIF.org](https://www.adif.org/)\: The ADIF specification and other information can be found. 
