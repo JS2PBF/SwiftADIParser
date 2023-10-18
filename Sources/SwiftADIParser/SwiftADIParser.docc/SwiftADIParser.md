@@ -58,7 +58,7 @@ On the other hand, if the specified length is larger than the actual length, the
 
 ## Source code
 
-[GitHub - SwiftADIParser](https://github.com/JS2PBF/SwiftADIParser)
+[JS2PBF/SwiftADIParser](https://github.com/JS2PBF/SwiftADIParser)
 
 
 ## Additional Resources
